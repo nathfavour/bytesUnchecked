@@ -13,9 +13,7 @@ pub mod vuln_zero_copy_alignment {
         Ok(())
     }
 
-    pub fn update_insecure(ctx: Context<UpdateInsecure>, val: u64) -> Result<()> {
-        // VULNERABILITY: Manually casting data without alignment checks.
-        // If the account data is not aligned to 8 bytes, this could panic.
+    pub fn update_insecure(ctx: Context<UpdateInsecure>, _val: u64) -> Result<()> {
         let account_info = &ctx.accounts.data;
         let data = account_info.try_borrow_data()?;
         
@@ -35,7 +33,7 @@ pub mod vuln_zero_copy_alignment {
     }
 }
 
-#[zero_copy]
+#[account(zero_copy)]
 #[repr(C)]
 #[derive(Pod, Zeroable)]
 pub struct BigData {
@@ -44,7 +42,7 @@ pub struct BigData {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    #[account(zero_copy, init, payer = user, space = 8 + 8)]
+    #[account(init, payer = user, space = 8 + 8)]
     pub data: AccountLoader<'info, BigData>,
     #[account(mut)]
     pub user: Signer<'info>,

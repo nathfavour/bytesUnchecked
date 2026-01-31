@@ -35,7 +35,7 @@ pub mod vuln_zero_copy_alignment {
 
 #[account(zero_copy)]
 #[repr(C)]
-#[derive(Pod, Zeroable)]
+// #[derive(Pod, Zeroable)] // Removed because #[account(zero_copy)] already implements them
 pub struct BigData {
     pub val: u64,
 }

@@ -19,7 +19,7 @@ pub mod vuln_hook_reentrancy {
             return Err(error!(ErrorCode::InsufficientFunds));
         }
 
-        // VULNERABILITY: Interactions before Effects.
+        // Potential reentrancy: Interaction before effect
         msg!("Transferring {} lamports...", amount);
         
         vault.balance -= amount;
@@ -33,7 +33,7 @@ pub mod vuln_hook_reentrancy {
             return Err(error!(ErrorCode::InsufficientFunds));
         }
 
-        // SECURE: CEI Pattern.
+        // CEI Pattern: Effect before interaction
         vault.balance -= amount;
 
         msg!("Transferring {} lamports safely...", amount);

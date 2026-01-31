@@ -17,7 +17,7 @@ pub mod vuln_zero_copy_alignment {
         let account_info = &ctx.accounts.data;
         let data = account_info.try_borrow_data()?;
         
-        // This is a dangerous cast if we don't know the alignment
+        // Unsafe cast without alignment check
         let ptr = data.as_ptr() as *const BigData;
         unsafe {
             msg!("Value: {}", (*ptr).val);

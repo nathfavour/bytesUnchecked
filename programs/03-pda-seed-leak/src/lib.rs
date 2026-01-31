@@ -27,8 +27,7 @@ pub struct InitializeInsecure<'info> {
         init,
         payer = user,
         space = 8 + 4 + sensitive_id.len(),
-        // VULNERABILITY: Using sensitive_id directly as a seed leaks it to anyone 
-        // who can observe the transaction or the account derivation.
+        // Sensitive data used as a seed
         seeds = [b"profile", sensitive_id.as_bytes()],
         bump
     )]
@@ -45,8 +44,7 @@ pub struct InitializeSecure<'info> {
         init,
         payer = user,
         space = 8 + 4 + sensitive_id.len(),
-        // SECURE: Use a hash of the sensitive_id to obfuscate it.
-        // This prevents the raw ID from being visible in the PDA seeds.
+        // Hash sensitive data before using as a seed
         seeds = [b"profile", hash(sensitive_id.as_bytes()).to_bytes().as_ref()],
         bump
     )]

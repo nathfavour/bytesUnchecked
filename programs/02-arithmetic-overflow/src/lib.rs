@@ -14,17 +14,14 @@ pub mod vuln_arithmetic_overflow {
 
     pub fn deposit_insecure(ctx: Context<UpdateVault>, amount: u64) -> Result<()> {
         let vault = &mut ctx.accounts.vault;
-        // VULNERABILITY: Standard addition operator '+' will wrap in release mode
-        // if overflow-checks are disabled, or panic if enabled.
-        // Even with checks enabled, not using checked_add is considered poor practice
-        // as it doesn't allow for graceful error handling.
+        // Potential overflow without checked math
         vault.balance += amount;
         Ok(())
     }
 
     pub fn deposit_secure(ctx: Context<UpdateVault>, amount: u64) -> Result<()> {
         let vault = &mut ctx.accounts.vault;
-        // SECURE: Use checked_add to handle overflows explicitly.
+        // Use checked_add to prevent overflow
         vault.balance = vault.balance.checked_add(amount).ok_or(error!(ErrorCode::Overflow))?;
         Ok(())
     }

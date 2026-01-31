@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use bytemuck::{Pod, Zeroable};
 
 declare_id!("H765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
 

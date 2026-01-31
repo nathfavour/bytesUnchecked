@@ -5,7 +5,13 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-vuln_missing_signer = "H6S2mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8"
+vuln_missing_signer = "C765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v"
+vuln_arithmetic_overflow = "D765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v"
+vuln_pda_seed_leak = "E765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v"
+vuln_account_closing = "F765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v"
+vuln_type_confusion = "G765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v"
+vuln_zero_copy_alignment = "H765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v"
+vuln_hook_reentrancy = "J765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v"
 
 [registry]
 url = "https://api.apr.dev"

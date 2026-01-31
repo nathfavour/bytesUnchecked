@@ -10,7 +10,7 @@ Using `UncheckedAccount` and manually deserializing without checking a discrimin
 
 ```rust
 pub fn admin_action_insecure(ctx: Context<AdminActionInsecure>) -> Result<()> {
-    // VULNERABILITY: No check to ensure 'admin' isn't actually a 'user' account.
+    //  No check to ensure 'admin' isn't actually a 'user' account.
     msg!("Privileged action by: {}", ctx.accounts.admin.key());
     Ok(())
 }
@@ -21,16 +21,9 @@ The standard solution is to prepend an 8-byte discriminator to every account. An
 
 ```rust
 pub fn admin_action_secure(ctx: Context<AdminActionSecure>) -> Result<()> {
-    // SECURE: Anchor checks the 8-byte discriminator automatically.
+    //  Anchor checks the 8-byte discriminator automatically.
     msg!("Privileged action by: {}", ctx.accounts.admin.authority);
     Ok(())
 }
 ```
 
-## Benchmarks
-| Implementation | CU Cost | Delta |
-|---|---|---|
-| Unchecked | ~150 | Baseline |
-| Discriminator Check | ~450 | +300 CU |
-
-*Note: The cost includes reading and comparing the first 8 bytes of the account data.*

@@ -11,7 +11,7 @@ The insecure version uses the standard addition operator `+`. While modern Ancho
 ```rust
 pub fn deposit_insecure(ctx: Context<UpdateVault>, amount: u64) -> Result<()> {
     let vault = &mut ctx.accounts.vault;
-    // VULNERABILITY: If overflow-checks are off, this wraps.
+    //  If overflow-checks are off, this wraps.
     // If they are on, it panics the program, which is better but still unhandled.
     vault.balance += amount;
     Ok(())
@@ -24,17 +24,10 @@ The secure implementation uses Rust's `checked_*` methods or Anchor's `math` fea
 ```rust
 pub fn deposit_secure(ctx: Context<UpdateVault>, amount: u64) -> Result<()> {
     let vault = &mut ctx.accounts.vault;
-    // SECURE: Use checked_add to return an explicit error on overflow.
+    //  Use checked_add to return an explicit error on overflow.
     vault.balance = vault.balance.checked_add(amount)
         .ok_or(error!(ErrorCode::Overflow))?;
     Ok(())
 }
 ```
 
-## Benchmarks
-| Implementation | CU Cost | Delta |
-|---|---|---|
-| Standard (+) | ~100 | Baseline |
-| Checked Add | ~180 | +80 CU |
-
-*Note: The performance cost is minimal compared to the catastrophic risk of loss of funds.*

@@ -13,7 +13,7 @@ pub fn update_insecure(ctx: Context<UpdateInsecure>, _val: u64) -> Result<()> {
     let account_info = &ctx.accounts.data;
     let data = account_info.try_borrow_data()?;
     
-    // VULNERABILITY: Unsafe cast. If data is not 8-byte aligned, this is UB.
+    //  Unsafe cast. If data is not 8-byte aligned, this is UB.
     let ptr = data.as_ptr() as *const BigData;
     unsafe { msg!("Value: {}", (*ptr).val); }
     Ok(())
@@ -32,14 +32,7 @@ pub struct BigData {
 
 pub struct UpdateSecure<'info> {
     #[account(mut)]
-    pub data: AccountLoader<'info, BigData>, // SECURE: Safe alignment handling
+    pub data: AccountLoader<'info, BigData>, //  Safe alignment handling
 }
 ```
 
-## Benchmarks
-| Implementation | CU Cost | Delta |
-|---|---|---|
-| Standard Borsh | ~5,000+ | (For large accounts) |
-| Zero-Copy | ~800 | -84% Savings |
-
-*Note: Zero-copy is one of the most powerful performance optimizations in Solana, but it requires strict hardware-level safety.*

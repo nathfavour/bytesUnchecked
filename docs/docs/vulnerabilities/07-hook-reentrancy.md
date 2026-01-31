@@ -47,10 +47,3 @@ pub fn withdraw_secure(ctx: Context<WithdrawSecure>, amount: u64) -> Result<()> 
 }
 ```
 
-## Benchmarks
-| Implementation | CU Cost | Delta |
-|---|---|---|
-| Insecure (Late State Update) | ~1,200 | Baseline |
-| Secure (CEI Pattern) | ~1,200 | 0 CU Difference |
-
-*Note: Secure architecture often has zero performance overhead—it simply requires a shift in logic ordering.*

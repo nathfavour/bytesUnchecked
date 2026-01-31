@@ -11,7 +11,7 @@ In our insecure implementation, we use `UncheckedAccount` for the admin without 
 ```rust
 pub fn update_admin_insecure(ctx: Context<UpdateAdminInsecure>, new_admin: Pubkey) -> Result<()> {
     let state = &mut ctx.accounts.state;
-    // VULNERABILITY: Anyone can pass the admin's public key here.
+    //  Anyone can pass the admin's public key here.
     // Since we don't check ctx.accounts.admin.is_signer, the update succeeds.
     state.admin = new_admin;
     Ok(())
@@ -28,16 +28,9 @@ The fix is to use Anchor's `Signer<'info>` type, which automatically enforces th
 pub struct UpdateAdminSecure<'info> {
     #[account(mut, has_one = admin)]
     pub state: Account<'info, AdminState>,
-    pub admin: Signer<'info>, // SECURE: Anchor checks is_signer automatically
+    pub admin: Signer<'info>, //  Anchor checks is_signer automatically
 }
 ```
 
 By using `Signer`, the program will return an error immediately if the `admin` account is not a signer of the transaction.
 
-## Benchmarks
-| Implementation | CU Cost | Delta |
-|---|---|---|
-| Insecure (Unchecked) | ~150 | Baseline |
-| Secure (Signer) | ~450 | +300 CU |
-
-*Note: The overhead includes the runtime check for the signature bit in the account metadata.*

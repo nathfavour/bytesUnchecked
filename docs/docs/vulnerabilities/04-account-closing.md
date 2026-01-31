@@ -34,11 +34,3 @@ pub fn close_secure(ctx: Context<CloseSecure>) -> Result<()> {
 }
 ```
 
-## Benchmarks
-| Implementation | CU Cost | Delta |
-|---|---|---|
-| Lamport Only | ~200 | Baseline |
-| Data Zeroing (Manual) | ~1,200 | +1,000 CU |
-| Anchor `close` | ~1,150 | Optimized |
-
-*Note: Zeroing data is costly because every byte must be written to, but it is the only way to prevent resurrection attacks.*

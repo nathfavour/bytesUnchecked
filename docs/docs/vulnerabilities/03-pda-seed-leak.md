@@ -12,7 +12,7 @@ Using raw PII (Personally Identifiable Information) as a seed:
 pub struct InitializeInsecure<'info> {
     #[account(
         init,
-        seeds = [b"profile", sensitive_id.as_bytes()], // VULNERABILITY: Plaintext leak
+        seeds = [b"profile", sensitive_id.as_bytes()], //  Plaintext leak
         bump
     )]
     pub profile: Account<'info, UserProfile>,
@@ -27,7 +27,7 @@ To protect privacy, sensitive seeds should be hashed before being passed to the 
 pub struct InitializeSecure<'info> {
     #[account(
         init,
-        // SECURE: Only the hash of the ID is visible publicly.
+        //  Only the hash of the ID is visible publicly.
         seeds = [b"profile", hash(sensitive_id.as_bytes()).to_bytes().as_ref()],
         bump
     )]
@@ -36,10 +36,3 @@ pub struct InitializeSecure<'info> {
 }
 ```
 
-## Benchmarks
-| Implementation | CU Cost | Delta |
-|---|---|---|
-| Raw Seed | ~800 | Baseline |
-| Hashed Seed | ~1,400 | +600 CU |
-
-*Note: Hashing (SHA-256) inside a program is compute-intensive but essential for privacy compliance.*

@@ -18,10 +18,10 @@ Each example includes:
 
 | ID | Vulnerability | Category | Focus |
 |---|---|---|---|
-| 01 | [Missing Signer](./vulnerabilities/01-missing-signer) | Signature Verification | Identity Validation |
-| 02 | [Arithmetic Overflow](./vulnerabilities/02-arithmetic-overflow) | Logic | Checked Math |
-| 03 | [PDA Seed Leak](./vulnerabilities/03-pda-seed-leak) | Privacy | PDA Security |
-| 04 | [Account Closing](./vulnerabilities/04-account-closing) | Memory | Data Zeroing |
-| 05 | [Type Confusion](./vulnerabilities/05-type-confusion) | Account Validation | Discriminators |
-| 06 | [Zero-Copy Alignment](./vulnerabilities/06-zero-copy-alignment) | Memory | Memory Layout |
-| 07 | [Hook Reentrancy](./vulnerabilities/07-hook-reentrancy) | CPI Logic | CEI Pattern |
+| 01 | [Missing Signer](/docs/vulnerabilities/missing-signer) | Signature Verification | Identity Validation |
+| 02 | [Arithmetic Overflow](/docs/vulnerabilities/arithmetic-overflow) | Logic | Checked Math |
+| 03 | [PDA Seed Leak](/docs/vulnerabilities/pda-seed-leak) | Privacy | PDA Security |
+| 04 | [Account Closing](/docs/vulnerabilities/account-closing) | Memory | Data Zeroing |
+| 05 | [Type Confusion](/docs/vulnerabilities/type-confusion) | Account Validation | Discriminators |
+| 06 | [Zero-Copy Alignment](/docs/vulnerabilities/zero-copy-alignment) | Memory | Memory Layout |
+| 07 | [Hook Reentrancy](/docs/vulnerabilities/hook-reentrancy) | CPI Logic | CEI Pattern |

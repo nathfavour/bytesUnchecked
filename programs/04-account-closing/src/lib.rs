@@ -17,9 +17,7 @@ pub mod vuln_account_closing {
         let dest = ctx.accounts.destination.to_account_info();
         let vault = ctx.accounts.vault.to_account_info();
 
-        // VULNERABILITY: Just transferring lamports is not enough.
-        // The data remains in the account. In some scenarios, if the account
-        // is re-funded, the old data might be interpreted as valid.
+        // Transfer lamports without clearing data
         let dest_lamports = dest.lamports();
         **dest.lamports.borrow_mut() = dest_lamports.checked_add(vault.lamports()).unwrap();
         **vault.lamports.borrow_mut() = 0;
@@ -31,8 +29,7 @@ pub mod vuln_account_closing {
         let dest = ctx.accounts.destination.to_account_info();
         let vault = ctx.accounts.vault.to_account_info();
 
-        // SECURE: Transfer lamports AND zero out the data.
-        // Anchor's `close` constraint does this automatically, but doing it manually:
+        // Clear data and transfer lamports
         let dest_lamports = dest.lamports();
         **dest.lamports.borrow_mut() = dest_lamports.checked_add(vault.lamports()).unwrap();
         **vault.lamports.borrow_mut() = 0;

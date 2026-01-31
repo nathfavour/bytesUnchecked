@@ -22,7 +22,7 @@ pub mod vuln_type_confusion {
 
     /// This instruction is supposed to be admin-only.
     pub fn admin_action_insecure(ctx: Context<AdminActionInsecure>) -> Result<()> {
-        // VULNERABILITY: We don't check if the account is actually an Admin account.
+        // Missing account discriminator check
         msg!("Admin action performed by: {}", ctx.accounts.admin.key());
         Ok(())
     }
@@ -53,7 +53,7 @@ pub struct InitializeAdmin<'info> {
 
 #[derive(Accounts)]
 pub struct AdminActionInsecure<'info> {
-    /// CHECK: Manual deserialization vulnerability
+    /// CHECK: Manual deserialization allows type confusion
     pub admin: UncheckedAccount<'info>,
     pub authority: Signer<'info>,
 }

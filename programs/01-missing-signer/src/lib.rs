@@ -20,15 +20,14 @@ pub mod vuln_missing_signer {
 
     pub fn update_admin_insecure(ctx: Context<UpdateAdminInsecure>, new_admin: Pubkey) -> Result<()> {
         let state = &mut ctx.accounts.state;
-        // VULNERABILITY: Missing .is_signer check on the admin account.
-        // Anyone can pass the admin's public key without proving they own it.
+        // No signer check on admin account
         state.admin = new_admin;
         Ok(())
     }
 
     pub fn update_admin_secure(ctx: Context<UpdateAdminSecure>, new_admin: Pubkey) -> Result<()> {
         let state = &mut ctx.accounts.state;
-        // SECURE: Anchor's Signer<'info> type automatically enforces the is_signer check.
+        // Signer<'info> handles the is_signer check
         state.admin = new_admin;
         Ok(())
     }
@@ -38,7 +37,7 @@ pub mod vuln_missing_signer {
 pub struct InitializeInsecure<'info> {
     #[account(init, payer = payer, space = 8 + 32)]
     pub state: Account<'info, AdminState>,
-    /// CHECK: This is fine for initialization
+    /// CHECK: Initialization check
     pub admin: UncheckedAccount<'info>,
     #[account(mut)]
     pub payer: Signer<'info>,
@@ -59,9 +58,7 @@ pub struct InitializeSecure<'info> {
 pub struct UpdateAdminInsecure<'info> {
     #[account(mut)]
     pub state: Account<'info, AdminState>,
-    /// CHECK: This is insecure because we don't check if this account signed the transaction.
-    /// In a raw Solana program, we'd check `admin.is_signer`.
-    /// Here, using UncheckedAccount without a manual check is the vulnerability.
+    /// CHECK: Missing signature verification
     pub admin: UncheckedAccount<'info>,
 }
 

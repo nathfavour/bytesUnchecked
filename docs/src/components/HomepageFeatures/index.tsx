@@ -11,32 +11,32 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Security Archive',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        A side-by-side comparison of insecure vs. secure Solana implementations,
+        covering 7 common vulnerability patterns.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Performance Benchmarks',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Precise Compute Unit (CU) measurements using <code>mollusk-svm</code> to
+        quantify the cost of security abstractions.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Pinocchio Safety',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Learn how to achieve raw performance without sacrificing safety by
+        enforcing rigorous manual invariants.
       </>
     ),
   },

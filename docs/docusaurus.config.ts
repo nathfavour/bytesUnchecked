@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'BytesUnchecked',
-  tagline: 'Solana Security & Performance Framework',
+  tagline: 'Solana Security Patterns Reference',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future

@@ -21,22 +21,22 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
-    title: 'Performance Benchmarks',
+    title: 'Anchor Safety',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Precise Compute Unit (CU) measurements using <code>mollusk-svm</code> to
-        quantify the cost of security abstractions.
+        Learn how the Anchor framework mitigates common security risks through
+        automated checks and idiomatic code patterns.
       </>
     ),
   },
   {
-    title: 'Pinocchio Safety',
+    title: 'Integration Tests',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Learn how to achieve raw performance without sacrificing safety by
-        enforcing rigorous manual invariants.
+        Every vulnerability is accompanied by a TypeScript test that proves the
+        exploit and verifies the subsequent fix.
       </>
     ),
   },

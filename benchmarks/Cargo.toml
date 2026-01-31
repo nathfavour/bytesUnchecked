@@ -1,6 +1,10 @@
 [package]
 name = "benchmarks-harness"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
+mollusk-svm = "0.0.10"
+solana-program = "1.18"
+solana-sdk = "1.18"
+# Add specific programs as dev-dependencies or workspace dependencies if needed

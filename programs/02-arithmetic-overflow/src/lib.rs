@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("8i1bT2wgk6BRtE7Mog5Aj7owv8XqHhUkFfh3ZJWBcutJ");
+declare_id!("54jifQzQUTxctTvfpSDUfaqG37NqACEMkaePgCyjKkyv");
 
 #[program]
 pub mod vuln_arithmetic_overflow {

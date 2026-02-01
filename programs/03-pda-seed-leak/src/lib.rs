@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use solana_program::hash::hash;
 
-declare_id!("D7mu2Eyx2dyCoMZMgT55zRzRTjcuTNY9DpTWbbwEs5vo");
+declare_id!("7rgXjj24ujXjAa4sZp6R2RmZCSHYGFAmAJ5S8RgapNwY");
 
 #[program]
 pub mod vuln_pda_seed_leak {

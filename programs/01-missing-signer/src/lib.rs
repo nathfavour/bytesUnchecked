@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("C765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("6pWpS8p9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v");
 
 #[program]
 pub mod vuln_missing_signer {

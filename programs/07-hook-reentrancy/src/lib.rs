@@ -1,6 +1,8 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::program::invoke;
+use anchor_lang::solana_program::instruction::Instruction;
 
-declare_id!("J765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("Ad2Z7mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
 
 #[program]
 pub mod vuln_hook_reentrancy {
@@ -20,15 +22,28 @@ pub mod vuln_hook_reentrancy {
         }
 
         // Interaction BEFORE Effect (Vulnerable)
-        // In a real scenario, this would be a CPI to a program that could call back (re-enter)
-        // such as a Token-2022 Transfer Hook or a malicious callback.
-        msg!("Interaction: Calling external program...");
-        let _ = invoke_placeholder_callback(
-            &ctx.accounts.external_program.to_account_info(),
-            &ctx.accounts.vault.to_account_info()
+        // We actually execute a CPI to the external program provided.
+        // In a real attack, this program would call 'withdraw_insecure' again.
+        let ix = Instruction {
+            program_id: ctx.accounts.external_program.key(),
+            accounts: vec![
+                AccountMeta::new(ctx.accounts.vault.key(), false),
+            ],
+            data: vec![1, 2, 3], // Dummy data
+        };
+
+        invoke(
+            &ix,
+            &[
+                ctx.accounts.external_program.to_account_info(),
+                ctx.accounts.vault.to_account_info(),
+            ],
         )?;
         
-        vault.balance -= amount;
+        // Re-fetch vault balance because it might have changed during CPI
+        // (Though in a real exploit, the subtraction below is what's dangerous)
+        vault.balance = vault.balance.checked_sub(amount).ok_or(error!(ErrorCode::InsufficientFunds))?;
+        
         msg!("Withdrawal successful. New balance: {}", vault.balance);
         Ok(())
     }
@@ -43,25 +58,25 @@ pub mod vuln_hook_reentrancy {
         // Effect BEFORE Interaction (Secure - CEI Pattern)
         vault.balance -= amount;
 
-        msg!("Interaction: Calling external program safely...");
-        let _ = invoke_placeholder_callback(
-            &ctx.accounts.external_program.to_account_info(),
-            &ctx.accounts.vault.to_account_info()
+        let ix = Instruction {
+            program_id: ctx.accounts.external_program.key(),
+            accounts: vec![
+                AccountMeta::new(ctx.accounts.vault.key(), false),
+            ],
+            data: vec![1, 2, 3],
+        };
+
+        invoke(
+            &ix,
+            &[
+                ctx.accounts.external_program.to_account_info(),
+                ctx.accounts.vault.to_account_info(),
+            ],
         )?;
 
         msg!("Withdrawal successful. New balance: {}", vault.balance);
         Ok(())
     }
-}
-
-/// A placeholder for a CPI call that could trigger a reentrancy.
-fn invoke_placeholder_callback<'info>(
-    _program: &AccountInfo<'info>,
-    _vault: &AccountInfo<'info>,
-) -> Result<()> {
-    // In a real exploit, this would be:
-    // anchor_lang::solana_program::program::invoke(...)
-    Ok(())
 }
 
 #[derive(Accounts)]

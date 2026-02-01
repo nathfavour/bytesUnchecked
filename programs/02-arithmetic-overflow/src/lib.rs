@@ -14,8 +14,8 @@ pub mod vuln_arithmetic_overflow {
 
     pub fn deposit_insecure(ctx: Context<UpdateVault>, amount: u64) -> Result<()> {
         let vault = &mut ctx.accounts.vault;
-        // Potential overflow without checked math
-        vault.balance += amount;
+        // Forced wrap-around for demonstration
+        vault.balance = vault.balance.wrapping_add(amount);
         Ok(())
     }
 

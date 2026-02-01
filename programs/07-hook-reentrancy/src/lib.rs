@@ -19,10 +19,17 @@ pub mod vuln_hook_reentrancy {
             return Err(error!(ErrorCode::InsufficientFunds));
         }
 
-        // Potential reentrancy: Interaction before effect
-        msg!("Transferring {} lamports...", amount);
+        // Interaction BEFORE Effect (Vulnerable)
+        // In a real scenario, this would be a CPI to a program that could call back (re-enter)
+        // such as a Token-2022 Transfer Hook or a malicious callback.
+        msg!("Interaction: Calling external program...");
+        let _ = invoke_placeholder_callback(
+            &ctx.accounts.external_program.to_account_info(),
+            &ctx.accounts.vault.to_account_info()
+        )?;
         
         vault.balance -= amount;
+        msg!("Withdrawal successful. New balance: {}", vault.balance);
         Ok(())
     }
 
@@ -33,12 +40,28 @@ pub mod vuln_hook_reentrancy {
             return Err(error!(ErrorCode::InsufficientFunds));
         }
 
-        // CEI Pattern: Effect before interaction
+        // Effect BEFORE Interaction (Secure - CEI Pattern)
         vault.balance -= amount;
 
-        msg!("Transferring {} lamports safely...", amount);
+        msg!("Interaction: Calling external program safely...");
+        let _ = invoke_placeholder_callback(
+            &ctx.accounts.external_program.to_account_info(),
+            &ctx.accounts.vault.to_account_info()
+        )?;
+
+        msg!("Withdrawal successful. New balance: {}", vault.balance);
         Ok(())
     }
+}
+
+/// A placeholder for a CPI call that could trigger a reentrancy.
+fn invoke_placeholder_callback<'info>(
+    _program: &AccountInfo<'info>,
+    _vault: &AccountInfo<'info>,
+) -> Result<()> {
+    // In a real exploit, this would be:
+    // anchor_lang::solana_program::program::invoke(...)
+    Ok(())
 }
 
 #[derive(Accounts)]
@@ -54,14 +77,16 @@ pub struct Initialize<'info> {
 pub struct WithdrawInsecure<'info> {
     #[account(mut)]
     pub vault: Account<'info, Vault>,
-    pub destination: UncheckedAccount<'info>,
+    /// CHECK: Placeholder for an external program (e.g., a token hook)
+    pub external_program: UncheckedAccount<'info>,
 }
 
 #[derive(Accounts)]
 pub struct WithdrawSecure<'info> {
     #[account(mut)]
     pub vault: Account<'info, Vault>,
-    pub destination: UncheckedAccount<'info>,
+    /// CHECK: Placeholder for an external program
+    pub external_program: UncheckedAccount<'info>,
 }
 
 #[account]

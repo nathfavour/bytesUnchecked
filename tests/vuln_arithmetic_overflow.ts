@@ -8,12 +8,13 @@ describe("vuln_arithmetic_overflow", () => {
   const program = anchor.workspace.VulnArithmeticOverflow as Program<VulnArithmeticOverflow>;
   const provider = anchor.getProvider();
 
-  it("Causes a panic on overflow in insecure mode", async () => {
+  it("Exploits arithmetic overflow (Insecure)", async () => {
     const vault = anchor.web3.Keypair.generate();
-    const maxU64 = new anchor.BN("18446744073709551615");
+    // Initial balance near max u64
+    const initialBalance = new anchor.BN("ffffffffffffffff", 16);
 
     await program.methods
-      .initialize(maxU64)
+      .initialize(initialBalance)
       .accounts({
         vault: vault.publicKey,
         user: provider.publicKey,
@@ -21,26 +22,24 @@ describe("vuln_arithmetic_overflow", () => {
       .signers([vault])
       .rpc();
 
-    try {
-      await program.methods
-        .depositInsecure(new anchor.BN(1))
-        .accounts({
-          vault: vault.publicKey,
-        })
-        .rpc();
-      expect.fail("Should have panicked due to overflow checks in Cargo.toml");
-    } catch (e) {
-      // In Solana, a panic results in a generic ProgramError or ComputeBudget exhaustion
-      // Depending on the environment, it might show as a 0x1770 (custom error) or similar if wrapped by Anchor
-    }
+    // Adding 1 to max u64 will wrap to 0 in our insecure implementation
+    await program.methods
+      .depositInsecure(new anchor.BN(1))
+      .accounts({
+        vault: vault.publicKey,
+      })
+      .rpc();
+
+    const account = await program.account.vault.fetch(vault.publicKey);
+    expect(account.balance.toNumber()).to.equal(0);
   });
 
-  it("Gracefully handles overflow in secure mode", async () => {
+  it("Fails on arithmetic overflow (Secure)", async () => {
     const vault = anchor.web3.Keypair.generate();
-    const maxU64 = new anchor.BN("18446744073709551615");
+    const initialBalance = new anchor.BN("ffffffffffffffff", 16);
 
     await program.methods
-      .initialize(maxU64)
+      .initialize(initialBalance)
       .accounts({
         vault: vault.publicKey,
         user: provider.publicKey,
@@ -55,9 +54,9 @@ describe("vuln_arithmetic_overflow", () => {
           vault: vault.publicKey,
         })
         .rpc();
-      expect.fail("Should have failed with custom Overflow error");
-    } catch (e: any) {
-      expect(e.error.errorCode.code).to.equal("Overflow");
+      expect.fail("Should have thrown an overflow error");
+    } catch (err) {
+      expect(err.toString()).to.include("Overflow");
     }
   });
 });

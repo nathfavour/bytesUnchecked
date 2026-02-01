@@ -20,14 +20,15 @@ pub mod vuln_missing_signer {
 
     pub fn update_admin_insecure(ctx: Context<UpdateAdminInsecure>, new_admin: Pubkey) -> Result<()> {
         let state = &mut ctx.accounts.state;
-        // No signer check on admin account
+        // VULNERABLE: 'admin' is an UncheckedAccount and we never check is_signer
+        // An attacker can provide any admin pubkey and the program will accept it.
         state.admin = new_admin;
         Ok(())
     }
 
     pub fn update_admin_secure(ctx: Context<UpdateAdminSecure>, new_admin: Pubkey) -> Result<()> {
         let state = &mut ctx.accounts.state;
-        // Signer<'info> handles the is_signer check
+        // SECURE: 'admin' is a Signer<'info>, Anchor automatically checks ctx.accounts.admin.is_signer
         state.admin = new_admin;
         Ok(())
     }

@@ -6,12 +6,12 @@ skip-lint = false
 
 [programs.localnet]
 vuln_missing_signer = "2ZhmUXbTTZaTm9gfvV2PvBjBARQHqEaEQTsKa8QT1FV9"
-vuln_arithmetic_overflow = "G24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
-vuln_pda_seed_leak = "H24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
-vuln_account_closing = "J24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
-vuln_type_confusion = "K24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
-vuln_zero_copy_alignment = "L24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
-vuln_hook_reentrancy = "M24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
+vuln_arithmetic_overflow = "8i1bT2wgk6BRtE7Mog5Aj7owv8XqHhUkFfh3ZJWBcutJ"
+vuln_pda_seed_leak = "D7mu2Eyx2dyCoMZMgT55zRzRTjcuTNY9DpTWbbwEs5vo"
+vuln_account_closing = "Fn4k81tW7pfTdjtVcEXEGnwmvSBCmaSi9EjZPgcD8M39"
+vuln_type_confusion = "8RR34N7BHCmaD1FDEuB9R2XwnHsEtXy766vCdki4KnFN"
+vuln_zero_copy_alignment = "ELR9aHdp6CkR1zwZ6sgHCDqcfaE44uqbrJsn5Bw7fmVN"
+vuln_hook_reentrancy = "BjVwjTm3TzEYN9uRZx78HDQ4g1kWSCWURMeJKuzfr8vY"
 
 [registry]
 url = "https://api.apr.dev"

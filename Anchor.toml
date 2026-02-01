@@ -5,13 +5,13 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-vuln_missing_signer = "2ZhmUXbTTZaTm9gfvV2PvBjBARQHqEaEQTsKa8QT1FV9"
-vuln_arithmetic_overflow = "8i1bT2wgk6BRtE7Mog5Aj7owv8XqHhUkFfh3ZJWBcutJ"
-vuln_pda_seed_leak = "D7mu2Eyx2dyCoMZMgT55zRzRTjcuTNY9DpTWbbwEs5vo"
-vuln_account_closing = "Fn4k81tW7pfTdjtVcEXEGnwmvSBCmaSi9EjZPgcD8M39"
-vuln_type_confusion = "8RR34N7BHCmaD1FDEuB9R2XwnHsEtXy766vCdki4KnFN"
-vuln_zero_copy_alignment = "ELR9aHdp6CkR1zwZ6sgHCDqcfaE44uqbrJsn5Bw7fmVN"
-vuln_hook_reentrancy = "BjVwjTm3TzEYN9uRZx78HDQ4g1kWSCWURMeJKuzfr8vY"
+vuln_missing_signer = "45oLukKiFBS7RD9nY414inaKV9bypSxy4RYVEE1rgZkU"
+vuln_arithmetic_overflow = "54jifQzQUTxctTvfpSDUfaqG37NqACEMkaePgCyjKkyv"
+vuln_pda_seed_leak = "7rgXjj24ujXjAa4sZp6R2RmZCSHYGFAmAJ5S8RgapNwY"
+vuln_account_closing = "89m1e57mfnsPvqdKpYpSfRsDSXDWjg3Cky7MYb9P2dF6"
+vuln_type_confusion = "6byh1jEaakt1ew4bEpGUa8Hr9wQ6nvXMB7f5jxqJgWmb"
+vuln_zero_copy_alignment = "AbQinz5UQX1utqkHT55FmTZ123nfqA48HRZfE1m9hmHU"
+vuln_hook_reentrancy = "CjoyCukZW7eLwNqYrNk5Sn2144hBer5mpFjusVVMEXVp"
 
 [registry]
 url = "https://api.apr.dev"

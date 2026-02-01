@@ -20,6 +20,7 @@ describe("vuln_missing_signer", () => {
         state: state.publicKey,
         admin: admin.publicKey,
         payer: provider.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([state])
       .rpc();
@@ -52,6 +53,7 @@ describe("vuln_missing_signer", () => {
         state: state.publicKey,
         admin: admin.publicKey,
         payer: provider.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([state, admin])
       .rpc();

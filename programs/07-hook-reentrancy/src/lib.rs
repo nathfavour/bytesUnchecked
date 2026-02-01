@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::program::invoke;
 use anchor_lang::solana_program::instruction::Instruction;
 
-declare_id!("Ad2Z7mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("BjVwjTm3TzEYN9uRZx78HDQ4g1kWSCWURMeJKuzfr8vY");
 
 #[program]
 pub mod vuln_hook_reentrancy {

@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use std::ops::DerefMut;
 
-declare_id!("C1osemYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("Fn4k81tW7pfTdjtVcEXEGnwmvSBCmaSi9EjZPgcD8M39");
 
 #[program]
 pub mod vuln_account_closing {

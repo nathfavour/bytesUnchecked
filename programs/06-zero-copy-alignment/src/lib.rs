@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use bytemuck::{Pod, Zeroable};
 
-declare_id!("Zcp1mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("ELR9aHdp6CkR1zwZ6sgHCDqcfaE44uqbrJsn5Bw7fmVN");
 
 #[program]
 pub mod vuln_zero_copy_alignment {

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("G765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("8RR34N7BHCmaD1FDEuB9R2XwnHsEtXy766vCdki4KnFN");
 
 #[program]
 pub mod vuln_type_confusion {

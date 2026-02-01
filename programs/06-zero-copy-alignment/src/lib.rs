@@ -9,7 +9,7 @@ pub mod vuln_zero_copy_alignment {
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let mut data = ctx.accounts.data.load_init()?;
-        data.padding = 1;
+        data.padding_byte = 1;
         data.val = 0x1122334455667788;
         Ok(())
     }
@@ -45,11 +45,10 @@ pub mod vuln_zero_copy_alignment {
 
 #[account(zero_copy)]
 #[repr(C)]
-#[derive(Pod, Zeroable)]
 pub struct BigData {
-    pub padding: u8,   // Offset 0
-    // The compiler will add 7 bytes of padding here because 'val' must be 8-byte aligned
-    pub val: u64,       // Offset 8
+    pub padding_byte: u8,   // Offset 0
+    pub _reserved: [u8; 7], // Explicit padding to satisfy Pod
+    pub val: u64,           // Offset 8
 }
 
 #[derive(Accounts)]

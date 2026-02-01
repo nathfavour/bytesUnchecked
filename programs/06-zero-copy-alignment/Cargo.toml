@@ -1,3 +1,5 @@
+cargo-features = ["edition2024"]
+
 [package]
 name = "vuln_zero_copy_alignment"
 version = "0.1.0"

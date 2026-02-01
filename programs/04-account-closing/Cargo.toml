@@ -1,3 +1,5 @@
+cargo-features = ["edition2024"]
+
 [package]
 name = "vuln_account_closing"
 version = "0.1.0"

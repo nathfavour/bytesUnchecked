@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use std::ops::DerefMut;
 
-declare_id!("F765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("C1osemYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
 
 #[program]
 pub mod vuln_account_closing {
@@ -9,7 +9,17 @@ pub mod vuln_account_closing {
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let vault = &mut ctx.accounts.vault;
-        vault.data = 100;
+        vault.data = 1337;
+        Ok(())
+    }
+
+    /// This instruction demonstrates that even if lamports are 0, the data remains.
+    pub fn check_vault_data(ctx: Context<CheckVault>) -> Result<()> {
+        let vault = &ctx.accounts.vault;
+        msg!("Vault data is still: {}", vault.data);
+        if vault.data == 1337 {
+            msg!("VULNERABILITY CONFIRMED: Account drained of lamports but data/discriminator still exists!");
+        }
         Ok(())
     }
 
@@ -17,10 +27,9 @@ pub mod vuln_account_closing {
         let dest = ctx.accounts.destination.to_account_info();
         let vault = ctx.accounts.vault.to_account_info();
 
-        // VULNERABLE: Only transferring lamports does NOT close the account in a way
-        // that prevents it from being used again in the same transaction or 
-        // before the end of the slot if not careful. 
-        // More importantly, it doesn't clear the data/discriminator properly.
+        // VULNERABLE: Only transferring lamports does NOT clear the account data.
+        // On Solana, an account is only 'closed' at the end of a transaction if its lamports are 0.
+        // However, within the same transaction, another instruction can still read the 'dead' data.
         let dest_lamports = dest.lamports();
         **dest.lamports.borrow_mut() = dest_lamports.checked_add(vault.lamports()).unwrap();
         **vault.lamports.borrow_mut() = 0;
@@ -50,6 +59,11 @@ pub struct CloseInsecure<'info> {
     pub vault: Account<'info, Vault>,
     #[account(mut)]
     pub destination: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct CheckVault<'info> {
+    pub vault: Account<'info, Vault>,
 }
 
 #[derive(Accounts)]

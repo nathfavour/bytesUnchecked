@@ -34,4 +34,11 @@ programs.forEach(p => {
     if (!fs.existsSync('target/idl')) fs.mkdirSync('target/idl', { recursive: true });
     fs.writeFileSync(`target/idl/${p.name}.json`, JSON.stringify(idl, null, 2));
     console.log(`Generated minimal IDL for ${p.name}`);
+
+    // Generate minimal TypeScript types
+    const typeName = p.name.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+    const tsContent = `export type ${typeName} = ${JSON.stringify(idl, null, 2)};`;
+    if (!fs.existsSync('target/types')) fs.mkdirSync('target/types', { recursive: true });
+    fs.writeFileSync(`target/types/${p.name}.ts`, tsContent);
+    console.log(`Generated minimal types for ${p.name}`);
 });

@@ -5,13 +5,13 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-vuln_missing_signer = { address = "2ZhmUXbTTZaTm9gfvV2PvBjBARQHqEaEQTsKa8QT1FV9", path = "programs/01-missing-signer" }
-vuln_arithmetic_overflow = { address = "G24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v", path = "programs/02-arithmetic-overflow" }
-vuln_pda_seed_leak = { address = "H24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v", path = "programs/03-pda-seed-leak" }
-vuln_account_closing = { address = "J24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v", path = "programs/04-account-closing" }
-vuln_type_confusion = { address = "K24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v", path = "programs/05-type-confusion" }
-vuln_zero_copy_alignment = { address = "L24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v", path = "programs/06-zero-copy-alignment" }
-vuln_hook_reentrancy = { address = "M24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v", path = "programs/07-hook-reentrancy" }
+vuln_missing_signer = "2ZhmUXbTTZaTm9gfvV2PvBjBARQHqEaEQTsKa8QT1FV9"
+vuln_arithmetic_overflow = "G24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
+vuln_pda_seed_leak = "H24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
+vuln_account_closing = "J24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
+vuln_type_confusion = "K24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
+vuln_zero_copy_alignment = "L24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
+vuln_hook_reentrancy = "M24KofP9q8Qn5n3vV9yG3yXqW8vXQW8vXQW8vXQW8v"
 
 [registry]
 url = "https://api.apr.dev"

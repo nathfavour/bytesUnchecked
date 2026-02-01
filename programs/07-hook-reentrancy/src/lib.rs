@@ -14,6 +14,33 @@ pub mod vuln_hook_reentrancy {
         Ok(())
     }
 
+    /// This is a malicious instruction that simulates a reentrant call.
+    /// In a real attack, this would be in a SEPARATE program (e.g., a Token-2022 hook).
+    pub fn malicious_callback(ctx: Context<MaliciousCallback>) -> Result<()> {
+        msg!("MALICIOUS CALLBACK: Attempting reentrancy...");
+        
+        // We try to call back into the vault's withdraw function
+        // We use a simple CPI here to keep it contained in one program for the demo.
+        let ix = Instruction {
+            program_id: crate::ID,
+            accounts: vec![
+                AccountMeta::new(ctx.accounts.vault.key(), false),
+                AccountMeta::new_readonly(crate::ID, false),
+            ],
+            data: anchor_lang::InstructionData::data(&crate::instruction::WithdrawInsecure { amount: 100 }),
+        };
+
+        invoke(
+            &ix,
+            &[
+                ctx.accounts.vault.to_account_info(),
+                ctx.accounts.self_program.to_account_info(),
+            ],
+        )?;
+
+        Ok(())
+    }
+
     pub fn withdraw_insecure(ctx: Context<WithdrawInsecure>, amount: u64) -> Result<()> {
         let vault = &mut ctx.accounts.vault;
         
@@ -21,15 +48,16 @@ pub mod vuln_hook_reentrancy {
             return Err(error!(ErrorCode::InsufficientFunds));
         }
 
+        msg!("WithdrawInsecure: Interaction starting (CPI)...");
+
         // Interaction BEFORE Effect (Vulnerable)
-        // We actually execute a CPI to the external program provided.
-        // In a real attack, this program would call 'withdraw_insecure' again.
         let ix = Instruction {
             program_id: ctx.accounts.external_program.key(),
             accounts: vec![
                 AccountMeta::new(ctx.accounts.vault.key(), false),
+                AccountMeta::new_readonly(crate::ID, false),
             ],
-            data: vec![1, 2, 3], // Dummy data
+            data: anchor_lang::InstructionData::data(&crate::instruction::MaliciousCallback {}),
         };
 
         invoke(
@@ -37,11 +65,15 @@ pub mod vuln_hook_reentrancy {
             &[
                 ctx.accounts.external_program.to_account_info(),
                 ctx.accounts.vault.to_account_info(),
+                ctx.accounts.external_program.to_account_info(), // self
             ],
         )?;
         
-        // Re-fetch vault balance because it might have changed during CPI
-        // (Though in a real exploit, the subtraction below is what's dangerous)
+        // REENTRANCY HAPPENS HERE:
+        // The malicious_callback has already subtracted 100 from vault.balance.
+        // But this instance of withdraw_insecure still has the OLD balance in memory
+        // if we didn't reload it, OR it just proceeds to subtract again.
+        
         vault.balance = vault.balance.checked_sub(amount).ok_or(error!(ErrorCode::InsufficientFunds))?;
         
         msg!("Withdrawal successful. New balance: {}", vault.balance);
@@ -49,32 +81,20 @@ pub mod vuln_hook_reentrancy {
     }
 
     pub fn withdraw_secure(ctx: Context<WithdrawSecure>, amount: u64) -> Result<()> {
+        // In a secure implementation, we use the CEI pattern or reentrancy guards.
         let vault = &mut ctx.accounts.vault;
         
         if vault.balance < amount {
             return Err(error!(ErrorCode::InsufficientFunds));
         }
 
-        // Effect BEFORE Interaction (Secure - CEI Pattern)
+        // Effect BEFORE Interaction
         vault.balance -= amount;
 
-        let ix = Instruction {
-            program_id: ctx.accounts.external_program.key(),
-            accounts: vec![
-                AccountMeta::new(ctx.accounts.vault.key(), false),
-            ],
-            data: vec![1, 2, 3],
-        };
+        msg!("WithdrawSecure: Interaction starting (CPI)...");
+        // Even if we call a malicious program now, the balance is already updated.
+        // If it tries to re-enter, it will see the reduced balance.
 
-        invoke(
-            &ix,
-            &[
-                ctx.accounts.external_program.to_account_info(),
-                ctx.accounts.vault.to_account_info(),
-            ],
-        )?;
-
-        msg!("Withdrawal successful. New balance: {}", vault.balance);
         Ok(())
     }
 }
@@ -92,7 +112,7 @@ pub struct Initialize<'info> {
 pub struct WithdrawInsecure<'info> {
     #[account(mut)]
     pub vault: Account<'info, Vault>,
-    /// CHECK: Placeholder for an external program (e.g., a token hook)
+    /// CHECK: The program to call (can be ourselves for this demo)
     pub external_program: UncheckedAccount<'info>,
 }
 
@@ -100,8 +120,16 @@ pub struct WithdrawInsecure<'info> {
 pub struct WithdrawSecure<'info> {
     #[account(mut)]
     pub vault: Account<'info, Vault>,
-    /// CHECK: Placeholder for an external program
+    /// CHECK: External program
     pub external_program: UncheckedAccount<'info>,
+}
+
+#[derive(Accounts)]
+pub struct MaliciousCallback<'info> {
+    #[account(mut)]
+    pub vault: Account<'info, Vault>,
+    /// CHECK: Self
+    pub self_program: UncheckedAccount<'info>,
 }
 
 #[account]

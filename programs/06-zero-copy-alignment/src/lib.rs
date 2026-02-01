@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
+use bytemuck::{Pod, Zeroable};
 
-declare_id!("H765mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
+declare_id!("Zcp1mYyvXQW8vXQW8vXQW8vXQW8vXQW8vXQW8vXQW8v");
 
 #[program]
 pub mod vuln_zero_copy_alignment {
@@ -8,18 +9,28 @@ pub mod vuln_zero_copy_alignment {
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let mut data = ctx.accounts.data.load_init()?;
-        data.val = 42;
+        data.padding = 1;
+        data.val = 0x1122334455667788;
         Ok(())
     }
 
-    pub fn update_insecure(ctx: Context<UpdateInsecure>, _val: u64) -> Result<()> {
+    /// VULNERABLE: Performs raw pointer casting from a byte array without checking alignment.
+    /// In Solana (especially on BPF/SBF hardware), loading a u64 from an unaligned address
+    /// can cause a SIGBUS or return corrupted data depending on the VM version.
+    pub fn update_insecure(ctx: Context<UpdateInsecure>, offset: u32) -> Result<()> {
         let account_info = &ctx.accounts.data;
         let data = account_info.try_borrow_data()?;
         
-        // Unsafe cast without alignment check
-        let ptr = data.as_ptr() as *const BigData;
+        // We manually calculate a pointer offset that might be misaligned
         unsafe {
-            msg!("Value: {}", (*ptr).val);
+            let base_ptr = data.as_ptr().add(offset as usize);
+            
+            // DANGEROUS: Casting to *const u64 without verifying that (base_ptr % 8 == 0)
+            let misaligned_ptr = base_ptr as *const u64;
+            
+            // This load may fail or be unpredictable if misaligned
+            let value = *misaligned_ptr;
+            msg!("Read value from offset {}: {:x}", offset, value);
         }
         
         Ok(())
@@ -34,14 +45,16 @@ pub mod vuln_zero_copy_alignment {
 
 #[account(zero_copy)]
 #[repr(C)]
-// #[derive(Pod, Zeroable)] // Removed because #[account(zero_copy)] already implements them
+#[derive(Pod, Zeroable)]
 pub struct BigData {
-    pub val: u64,
+    pub padding: u8,   // Offset 0
+    // The compiler will add 7 bytes of padding here because 'val' must be 8-byte aligned
+    pub val: u64,       // Offset 8
 }
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    #[account(init, payer = user, space = 8 + 8)]
+    #[account(init, payer = user, space = 8 + std::mem::size_of::<BigData>())]
     pub data: AccountLoader<'info, BigData>,
     #[account(mut)]
     pub user: Signer<'info>,
@@ -50,7 +63,7 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct UpdateInsecure<'info> {
-    /// CHECK: Manual deserialization
+    /// CHECK: We are intentionally doing unsafe raw data access
     pub data: UncheckedAccount<'info>,
 }
 
